@@ -3,11 +3,12 @@ extern crate flate2;
 use flate2::write::GzEncoder;
 use flate2::Compression;
 
+use std::io;
+use std::process;
 use std::env::args;
 use std::fs::File;
-use std::io;
 
-fn main() -> Result<(), io::Error>{
+fn main() {
     let arguments: Vec<String> = args().collect();
     let parsed_args = parse_args(&arguments);
 
@@ -16,7 +17,10 @@ fn main() -> Result<(), io::Error>{
         panic!("must pass source and target!");
     }
 
-    return run(parsed_args.file_path, parsed_args.output_file_name);
+    if let Err(e) = run(parsed_args.file_path, parsed_args.output_file_name) {
+        println!("Application error: {e}");
+        process::exit(1);
+    }
 }
 
 struct ParsedArgs {
